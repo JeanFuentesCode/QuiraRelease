@@ -1,0 +1,40 @@
+{
+  "expo": {
+    "name": "Quira",
+    "slug": "quira",
+    "owner": "jeandeveloper23",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/logo.png",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/logo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#000000"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.jeanfuentes.quira"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/logo.png",
+        "backgroundColor": "#000000"
+      },
+      "package": "com.jeanfuentes.quira"
+    },
+    "web": {
+      "favicon": "./assets/logo.png"
+    },
+    "sdkVersion": "51.0.0",
+    "platforms": [
+      "ios",
+      "android"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "2a0a32d8-6a5b-41ff-a2ce-bb959d6e19fd"
+      }
+    }
+  }
+}
