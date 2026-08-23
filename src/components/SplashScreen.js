@@ -10,14 +10,14 @@ export default function SplashScreen({ onFinish }) {
   const rotateAnim = useRef(new Animated.Value(0)).current;
   const opacityAnim = useRef(new Animated.Value(0)).current;
 
-  // Animación de opacidad para el texto
+  // Animación de opacidad para el pie de página
   const textOpacityAnim = useRef(new Animated.Value(0)).current;
 
   // Animación del brillo interno
   const glowAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    // 1. Entrada RÁPIDA y FLUIDA (1.2 segundos)
+    // 1. Entrada rápida y fluida
     Animated.parallel([
       Animated.timing(moveAnim, {
         toValue: { x: 0, y: 0 },
@@ -43,7 +43,7 @@ export default function SplashScreen({ onFinish }) {
         useNativeDriver: true,
       }),
     ]).start(() => {
-      // 2. Aparición del texto + Brillo exprés (0.4 segundos)
+      // 2. Aparición del pie de página y brillo
       Animated.parallel([
         Animated.timing(textOpacityAnim, {
           toValue: 1,
@@ -63,7 +63,7 @@ export default function SplashScreen({ onFinish }) {
           }),
         ]),
       ]).start(() => {
-        // 3. Breve descanso imperceptible antes de pasar al home (0.6 segundos)
+        // 3. Transición al home
         setTimeout(() => {
           onFinish();
         }, 600);
@@ -71,7 +71,7 @@ export default function SplashScreen({ onFinish }) {
     });
   }, []);
 
-  // Mapear la rotación a 720 grados (2 vueltas rápidas)
+  // Rotación a 720 grados
   const spin = rotateAnim.interpolate({
     inputRange: [0, 1],
     outputRange: ['0deg', '720deg'],
@@ -97,14 +97,14 @@ export default function SplashScreen({ onFinish }) {
         >
           {/* Logo Base */}
           <Image
-            source={require('../../assets/logo.png')}
+            source={require('../../assets/logo.webp')}
             style={styles.logo}
             resizeMode="contain"
           />
 
           {/* Capa de Brillo */}
           <Animated.Image
-            source={require('../../assets/logo.png')}
+            source={require('../../assets/logo.webp')}
             style={[
               styles.logo,
               styles.glowLayer,
@@ -115,16 +115,11 @@ export default function SplashScreen({ onFinish }) {
             resizeMode="contain"
           />
         </Animated.View>
-
-        {/* Nombre de la App */}
-        <Animated.View style={{ opacity: textOpacityAnim }}>
-          <Text style={styles.brandTitle}>QUIRA</Text>
-        </Animated.View>
       </View>
 
-      {/* Versión */}
-      <Animated.View style={[styles.versionContainer, { opacity: textOpacityAnim }]}>
-        <Text style={styles.versionText}>v1.0</Text>
+      {/* Pie de página: Propiedad Onyx Studio centrada */}
+      <Animated.View style={[styles.footerContainer, { opacity: textOpacityAnim }]}>
+        <Text style={styles.footerText}>by Onyx Studio</Text>
       </Animated.View>
     </View>
   );
@@ -158,20 +153,15 @@ const styles = StyleSheet.create({
     left: 0,
     tintColor: '#FFFFFF',
   },
-  brandTitle: {
-    marginTop: 8,
-    fontSize: 38,
-    fontWeight: '900',
-    color: '#FFFFFF',
-    letterSpacing: 6,
-    textTransform: 'uppercase',
-  },
-  versionContainer: {
+  footerContainer: {
     position: 'absolute',
     bottom: 24,
+    left: 24,
     right: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  versionText: {
+  footerText: {
     fontSize: 12,
     fontWeight: '600',
     color: '#475569',
