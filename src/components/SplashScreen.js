@@ -97,14 +97,14 @@ export default function SplashScreen({ onFinish }) {
         >
           {/* Logo Base */}
           <Image
-            source={require('../../assets/logo.webp')}
+            source={require('../../assets/logo.png')}
             style={styles.logo}
             resizeMode="contain"
           />
 
           {/* Capa de Brillo */}
           <Animated.Image
-            source={require('../../assets/logo.webp')}
+            source={require('../../assets/logo.png')}
             style={[
               styles.logo,
               styles.glowLayer,
