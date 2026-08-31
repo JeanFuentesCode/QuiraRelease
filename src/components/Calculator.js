@@ -1,6 +1,5 @@
 import React, { useState, useRef } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Animated } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 
 export default function Calculator({ rates, isDarkMode }) {
   const [selectedRate, setSelectedRate] = useState('bcvUsd');
@@ -19,23 +18,26 @@ export default function Calculator({ rates, isDarkMode }) {
     ]).start();
   };
 
+  // Reemplaza la coma por punto antes de convertir a número
+  const parseInput = (val) => parseFloat(val.replace(',', '.')) || 0;
+
   const handleRateChange = (rateKey) => {
     triggerAnim();
     setSelectedRate(rateKey);
     const newRate = rates ? rates[rateKey] || 1 : 1;
-    const numForeign = parseFloat(foreignAmount) || 0;
+    const numForeign = parseInput(foreignAmount);
     setVesAmount((numForeign * newRate).toFixed(2));
   };
 
   const handleForeignInput = (text) => {
     setForeignAmount(text);
-    const num = parseFloat(text) || 0;
+    const num = parseInput(text);
     setVesAmount((num * currentRate).toFixed(2));
   };
 
   const handleVesInput = (text) => {
     setVesAmount(text);
-    const num = parseFloat(text) || 0;
+    const num = parseInput(text);
     if (currentRate > 0) {
       setForeignAmount((num / currentRate).toFixed(2));
     }
