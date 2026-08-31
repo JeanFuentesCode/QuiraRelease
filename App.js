@@ -13,6 +13,7 @@ import {
   Animated
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { ObserveRoot } from 'expo-observe';
 import quiraApi from './src/api/quiraApi';
 import Calculator from './src/components/Calculator';
 import RateCard from './src/components/RateCard';
@@ -64,116 +65,118 @@ export default function App() {
 
   if (showSplash) {
     return (
-      <>
+      <ObserveRoot>
         <StatusBar barStyle={isDarkMode ? "light-content" : "dark-content"} backgroundColor={isDarkMode ? "#000000" : "#F1F5F9"} />
         <SplashScreen onFinish={() => setShowSplash(false)} />
-      </>
+      </ObserveRoot>
     );
   }
 
   const dynamicStyles = getStyles(isDarkMode);
 
   return (
-    <Animated.View style={[dynamicStyles.container, { opacity: fadeAnim }]}>
-      <SafeAreaView style={{ flex: 1 }}>
-        <StatusBar barStyle={isDarkMode ? "light-content" : "dark-content"} backgroundColor={isDarkMode ? "#000000" : "#F1F5F9"} />
-        
-        {/* Header */}
-        <View style={styles.header}>
-          <Image
-            source={require('./assets/logo.png')}
-            style={styles.logo}
-            resizeMode="contain"
-          />
-          <TouchableOpacity
-            style={dynamicStyles.themeButton}
-            onPress={toggleTheme}
-            activeOpacity={0.8}
-          >
-            <Ionicons
-              name={isDarkMode ? 'sunny-outline' : 'moon-outline'}
-              size={20}
-              color={isDarkMode ? '#CA8A04' : '#0F172A'}
+    <ObserveRoot>
+      <Animated.View style={[dynamicStyles.container, { opacity: fadeAnim }]}>
+        <SafeAreaView style={{ flex: 1 }}>
+          <StatusBar barStyle={isDarkMode ? "light-content" : "dark-content"} backgroundColor={isDarkMode ? "#000000" : "#F1F5F9"} />
+          
+          {/* Header */}
+          <View style={styles.header}>
+            <Image
+              source={require('./assets/logo.png')}
+              style={styles.logo}
+              resizeMode="contain"
             />
-          </TouchableOpacity>
-        </View>
-
-        <ScrollView
-          contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={false}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={isDarkMode ? "#FFFFFF" : "#09090B"} />
-          }
-        >
-          {/* Pestañas Principales */}
-          <View style={dynamicStyles.tabsContainer}>
             <TouchableOpacity
-              style={[styles.tabButton, activeTab === 'tasas' && dynamicStyles.activeTabButton]}
-              onPress={() => setActiveTab('tasas')}
+              style={dynamicStyles.themeButton}
+              onPress={toggleTheme}
               activeOpacity={0.8}
             >
-              <Text style={[styles.tabText, activeTab === 'tasas' && dynamicStyles.activeTabText]}>
-                Mercado
-              </Text>
-            </TouchableOpacity>
-            
-            <TouchableOpacity
-              style={[styles.tabButton, activeTab === 'historial' && dynamicStyles.activeTabButton]}
-              onPress={() => setActiveTab('historial')}
-              activeOpacity={0.8}
-            >
-              <Text style={[styles.tabText, activeTab === 'historial' && dynamicStyles.activeTabText]}>
-                Historial
-              </Text>
+              <Ionicons
+                name={isDarkMode ? 'sunny-outline' : 'moon-outline'}
+                size={20}
+                color={isDarkMode ? '#CA8A04' : '#0F172A'}
+              />
             </TouchableOpacity>
           </View>
 
-          {loading ? (
-            <View style={styles.loaderContainer}>
-              <ActivityIndicator size="large" color="#CA8A04" />
+          <ScrollView
+            contentContainerStyle={styles.scrollContent}
+            showsVerticalScrollIndicator={false}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={isDarkMode ? "#FFFFFF" : "#09090B"} />
+            }
+          >
+            {/* Pestañas Principales */}
+            <View style={dynamicStyles.tabsContainer}>
+              <TouchableOpacity
+                style={[styles.tabButton, activeTab === 'tasas' && dynamicStyles.activeTabButton]}
+                onPress={() => setActiveTab('tasas')}
+                activeOpacity={0.8}
+              >
+                <Text style={[styles.tabText, activeTab === 'tasas' && dynamicStyles.activeTabText]}>
+                  Mercado
+                </Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity
+                style={[styles.tabButton, activeTab === 'historial' && dynamicStyles.activeTabButton]}
+                onPress={() => setActiveTab('historial')}
+                activeOpacity={0.8}
+              >
+                <Text style={[styles.tabText, activeTab === 'historial' && dynamicStyles.activeTabText]}>
+                  Historial
+                </Text>
+              </TouchableOpacity>
             </View>
-          ) : (
-            <View style={styles.content}>
-              {activeTab === 'tasas' ? (
-                <View>
-                  <Calculator rates={rates} isDarkMode={isDarkMode} />
 
-                  <View style={styles.sectionHeaderRow}>
-                    <Text style={dynamicStyles.sectionTitle}>Tasas Actuales</Text>
-                    <Text style={styles.sectionSub}>Ref. Oficiales</Text>
-                  </View>
+            {loading ? (
+              <View style={styles.loaderContainer}>
+                <ActivityIndicator size="large" color="#CA8A04" />
+              </View>
+            ) : (
+              <View style={styles.content}>
+                {activeTab === 'tasas' ? (
+                  <View>
+                    <Calculator rates={rates} isDarkMode={isDarkMode} />
 
-                  <View style={dynamicStyles.marketList}>
-                    <RateCard
-                      title="Dólar Oficial"
-                      subtitle="BCV / VES"
-                      rate={rates?.bcvUsd}
-                      isDarkMode={isDarkMode}
-                    />
-                    <RateCard
-                      title="USDT P2P"
-                      subtitle="Binance / VES"
-                      rate={rates?.usdtP2p}
-                      isDarkMode={isDarkMode}
-                    />
-                    <RateCard
-                      title="Euro Oficial"
-                      subtitle="BCV / VES"
-                      rate={rates?.bcvEur}
-                      isDarkMode={isDarkMode}
-                    />
+                    <View style={styles.sectionHeaderRow}>
+                      <Text style={dynamicStyles.sectionTitle}>Tasas Actuales</Text>
+                      <Text style={styles.sectionSub}>Ref. Oficiales</Text>
+                    </View>
+
+                    <View style={dynamicStyles.marketList}>
+                      <RateCard
+                        title="Dólar Oficial"
+                        subtitle="BCV / VES"
+                        rate={rates?.bcvUsd}
+                        isDarkMode={isDarkMode}
+                      />
+                      <RateCard
+                        title="USDT P2P"
+                        subtitle="Binance / VES"
+                        rate={rates?.usdtP2p}
+                        isDarkMode={isDarkMode}
+                      />
+                      <RateCard
+                        title="Euro Oficial"
+                        subtitle="BCV / VES"
+                        rate={rates?.bcvEur}
+                        isDarkMode={isDarkMode}
+                      />
+                    </View>
                   </View>
-                </View>
-              ) : (
-                <View>
-                  <HistoryList isDarkMode={isDarkMode} />
-                </View>
-              )}
-            </View>
-          )}
-        </ScrollView>
-      </SafeAreaView>
-    </Animated.View>
+                ) : (
+                  <View>
+                    <HistoryList isDarkMode={isDarkMode} />
+                  </View>
+                )}
+              </View>
+            )}
+          </ScrollView>
+        </SafeAreaView>
+      </Animated.View>
+    </ObserveRoot>
   );
 }
 
