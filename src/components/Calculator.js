@@ -1,14 +1,42 @@
 import React, { useState, useRef } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Animated } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+
+// Formatea el texto ingresado con puntos de millar y coma decimal
+const formatCurrencyInput = (text, maxIntegerDigits = 12) => {
+  if (!text) return '';
+
+  let normalized = text.replace('.', ',');
+  const parts = normalized.split(',');
+
+  if (parts.length > 2) return text.slice(0, -1);
+
+  const integerRaw = parts[0].replace(/\D/g, '');
+  if (integerRaw.length > maxIntegerDigits) return text.slice(0, -1);
+
+  const integerFormatted = integerRaw.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+
+  if (parts.length === 2) {
+    const decimalRaw = parts[1].replace(/\D/g, '').slice(0, 2);
+    return `${integerFormatted},${decimalRaw}`;
+  }
+
+  return integerFormatted;
+};
+
+// Convierte el texto formateado (ej. "1.000,50") a Float para cálculos
+const parseFormattedToFloat = (formattedText) => {
+  if (!formattedText) return 0;
+  const clean = formattedText.replace(/\./g, '').replace(',', '.');
+  return parseFloat(clean) || 0;
+};
 
 export default function Calculator({ rates, isDarkMode }) {
   const [selectedRate, setSelectedRate] = useState('bcvUsd');
   const currentRate = rates ? rates[selectedRate] || 1 : 1;
   
-  // Inicializamos en 1 dólar y su conversión
+  // Inicialización con formato correcto
   const [foreignAmount, setForeignAmount] = useState('1');
-  const [vesAmount, setVesAmount] = useState(currentRate.toString());
+  const [vesAmount, setVesAmount] = useState(formatCurrencyInput(currentRate.toFixed(2)));
 
   const scaleAnim = useRef(new Animated.Value(1)).current;
 
@@ -23,21 +51,23 @@ export default function Calculator({ rates, isDarkMode }) {
     triggerAnim();
     setSelectedRate(rateKey);
     const newRate = rates ? rates[rateKey] || 1 : 1;
-    const numForeign = parseFloat(foreignAmount) || 0;
-    setVesAmount((numForeign * newRate).toFixed(2));
+    const numForeign = parseFormattedToFloat(foreignAmount);
+    setVesAmount(formatCurrencyInput((numForeign * newRate).toFixed(2)));
   };
 
   const handleForeignInput = (text) => {
-    setForeignAmount(text);
-    const num = parseFloat(text) || 0;
-    setVesAmount((num * currentRate).toFixed(2));
+    const formatted = formatCurrencyInput(text);
+    setForeignAmount(formatted);
+    const num = parseFormattedToFloat(formatted);
+    setVesAmount(formatCurrencyInput((num * currentRate).toFixed(2)));
   };
 
   const handleVesInput = (text) => {
-    setVesAmount(text);
-    const num = parseFloat(text) || 0;
+    const formatted = formatCurrencyInput(text);
+    setVesAmount(formatted);
+    const num = parseFormattedToFloat(formatted);
     if (currentRate > 0) {
-      setForeignAmount((num / currentRate).toFixed(2));
+      setForeignAmount(formatCurrencyInput((num / currentRate).toFixed(2)));
     }
   };
 
@@ -65,12 +95,13 @@ export default function Calculator({ rates, isDarkMode }) {
         </Text>
         <TextInput
           style={dynamicStyles.textInput}
-          keyboardType="numeric"
+          keyboardType="decimal-pad"
           value={foreignAmount}
           onChangeText={handleForeignInput}
           placeholder="0"
           placeholderTextColor={isDarkMode ? '#3F3F46' : '#A1A1AA'}
           selectionColor="#CA8A04"
+          maxLength={18}
         />
       </View>
 
@@ -82,12 +113,13 @@ export default function Calculator({ rates, isDarkMode }) {
           <Text style={dynamicStyles.outputCurrency}>Bs.</Text>
           <TextInput
             style={dynamicStyles.textInput}
-            keyboardType="numeric"
+            keyboardType="decimal-pad"
             value={vesAmount}
             onChangeText={handleVesInput}
-            placeholder="0.00"
+            placeholder="0,00"
             placeholderTextColor={isDarkMode ? '#3F3F46' : '#A1A1AA'}
             selectionColor="#CA8A04"
+            maxLength={18}
           />
         </View>
       </View>
