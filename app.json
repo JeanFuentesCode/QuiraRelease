@@ -1,0 +1,40 @@
+{
+  "expo": {
+    "name": "Quira",
+    "slug": "quira-app-",
+    "owner": "quira-company-ca",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/logo.png",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/logo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#000000"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.jeanfuentes.quira"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/logo.png",
+        "backgroundColor": "#000000"
+      },
+      "package": "com.jeanfuentes.quira"
+    },
+    "web": {
+      "favicon": "./assets/logo.png"
+    },
+    "sdkVersion": "51.0.0",
+    "platforms": [
+      "ios",
+      "android"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "44ac423f-c155-4ba6-b867-2c718b2bac4c"
+      }
+    }
+  }
+}
