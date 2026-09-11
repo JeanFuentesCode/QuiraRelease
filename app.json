@@ -21,7 +21,10 @@
         "foregroundImage": "./assets/logo.png",
         "backgroundColor": "#000000"
       },
-      "package": "com.jeanfuentes.quira"
+      "package": "com.jeanfuentes.quira",
+      "permissions": [
+        "android.permission.REQUEST_INSTALL_PACKAGES"
+      ]
     },
     "web": {
       "favicon": "./assets/logo.png"
