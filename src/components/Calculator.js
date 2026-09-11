@@ -2,12 +2,11 @@ import React, { useState, useRef } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Animated } from 'react-native';
 
 // Formatea el texto ingresado separando millares y decimales sin perder ceros
-const formatCurrencyInput = (text, maxDigits = 12) => {
+const formatCurrencyInput = (text, maxDigits = 10) => {
   if (!text) return '';
 
   let cleanText = text;
 
-  // Si no tiene coma, pero el usuario presiona punto al final o para decimales (ej: "10." o "10.5")
   if (!cleanText.includes(',')) {
     if (/\.\d{1,2}$/.test(cleanText) || /\.$/.test(cleanText)) {
       const lastDotIndex = cleanText.lastIndexOf('.');
@@ -15,27 +14,22 @@ const formatCurrencyInput = (text, maxDigits = 12) => {
     }
   }
 
-  // Separar parte entera y parte decimal por la coma
   const parts = cleanText.split(',');
 
-  // Evitar más de una coma decimal
   if (parts.length > 2) return text.slice(0, -1);
 
-  // Extraer dígitos limpios de la parte entera (removiendo puntos de millar previos)
   let integerDigits = parts[0].replace(/\D/g, '');
 
-  // Eliminar ceros a la izquierda excepto si es un solo cero
+  // Eliminar ceros a la izquierda
   integerDigits = integerDigits.replace(/^0+(?=\d)/, '');
 
-  // Limitar longitud máxima de enteros
+  // Limitar longitud máxima de enteros a 10 dígitos
   if (integerDigits.length > maxDigits) {
     integerDigits = integerDigits.slice(0, maxDigits);
   }
 
-  // Aplicar puntos de millar
   const integerFormatted = integerDigits.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 
-  // Si el usuario ingresó una coma decimal
   if (parts.length === 2) {
     const decimalDigits = parts[1].replace(/\D/g, '').slice(0, 2);
     return `${integerFormatted || '0'},${decimalDigits}`;
@@ -44,14 +38,12 @@ const formatCurrencyInput = (text, maxDigits = 12) => {
   return integerFormatted;
 };
 
-// Convierte el texto formateado ("1.000.000,50") a Float para los cálculos
 const parseFormattedToFloat = (formattedText) => {
   if (!formattedText) return 0;
   const clean = formattedText.replace(/\./g, '').replace(',', '.');
   return parseFloat(clean) || 0;
 };
 
-// Formatea el resultado numérico para mostrarlo en pantalla
 const formatNumberToCurrency = (num) => {
   if (isNaN(num) || !isFinite(num) || num === 0) return '0,00';
   const fixed = num.toFixed(2);
@@ -85,14 +77,14 @@ export default function Calculator({ rates, isDarkMode }) {
   };
 
   const handleForeignInput = (text) => {
-    const formatted = formatCurrencyInput(text, 12);
+    const formatted = formatCurrencyInput(text, 10);
     setForeignAmount(formatted);
     const num = parseFormattedToFloat(formatted);
     setVesAmount(formatNumberToCurrency(num * currentRate));
   };
 
   const handleVesInput = (text) => {
-    const formatted = formatCurrencyInput(text, 14);
+    const formatted = formatCurrencyInput(text, 10);
     setVesAmount(formatted);
     const num = parseFormattedToFloat(formatted);
     if (currentRate > 0) {
@@ -130,7 +122,7 @@ export default function Calculator({ rates, isDarkMode }) {
           placeholder="0"
           placeholderTextColor={isDarkMode ? '#3F3F46' : '#A1A1AA'}
           selectionColor="#CA8A04"
-          maxLength={18}
+          maxLength={16}
         />
       </View>
 
@@ -148,7 +140,7 @@ export default function Calculator({ rates, isDarkMode }) {
             placeholder="0,00"
             placeholderTextColor={isDarkMode ? '#3F3F46' : '#A1A1AA'}
             selectionColor="#CA8A04"
-            maxLength={22}
+            maxLength={16}
           />
         </View>
       </View>
