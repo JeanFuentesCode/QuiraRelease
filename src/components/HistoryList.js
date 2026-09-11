@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import quiraApi from '../Api/quiraApi';
+import quiraApi from '../api/quiraApi';
 
 export default function HistoryList({ isDarkMode }) {
   const [history, setHistory] = useState([]);

@@ -13,7 +13,7 @@ import {
   Animated
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import quiraApi from './src/Api/quiraApi';
+import quiraApi from './src/api/quiraApi';
 import Calculator from './src/components/Calculator';
 import RateCard from './src/components/RateCard';
 import HistoryList from './src/components/HistoryList';
