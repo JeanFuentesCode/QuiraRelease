@@ -18,9 +18,10 @@ import Calculator from './src/components/Calculator';
 import RateCard from './src/components/RateCard';
 import HistoryList from './src/components/HistoryList';
 import SplashScreen from './src/components/SplashScreen';
+import UpdateModal from './src/components/UpdateModal';
 
-// Importamos la función de verificación
-import { checkForUpdates } from './src/services/updateService';
+// Servicios de actualización
+import { checkForUpdates, downloadAndInstallApk } from './src/services/updateService';
 
 export default function App() {
   const [showSplash, setShowSplash] = useState(true);
@@ -34,7 +35,7 @@ export default function App() {
   
   const [isDarkMode, setIsDarkMode] = useState(true);
   
-  // Animación de fundido (fade) para el cambio de modo
+  // Animación de fundido para el cambio de modo
   const fadeAnim = useRef(new Animated.Value(1)).current;
 
   const toggleTheme = () => {
@@ -188,6 +189,15 @@ export default function App() {
           )}
         </ScrollView>
       </SafeAreaView>
+
+      {/* Modal de Actualización */}
+      <UpdateModal
+        visible={!!updateData}
+        updateData={updateData}
+        onUpdate={() => downloadAndInstallApk(updateData.apkUrl)}
+        onClose={() => setUpdateData(null)}
+        isDarkMode={isDarkMode}
+      />
     </Animated.View>
   );
 }
