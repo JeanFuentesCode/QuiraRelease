@@ -3,7 +3,7 @@
     "name": "Quira",
     "slug": "quira-app-",
     "owner": "quira-company-ca",
-    "version": "1.0.1",
+    "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/logo.png",
     "userInterfaceStyle": "automatic",
@@ -22,6 +22,7 @@
         "backgroundColor": "#000000"
       },
       "package": "com.jeanfuentes.quira",
+      "versionCode": 1,
       "permissions": [
         "android.permission.REQUEST_INSTALL_PACKAGES"
       ]
