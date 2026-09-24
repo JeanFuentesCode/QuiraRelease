@@ -1,63 +1,46 @@
-import { Alert } from 'react-native';
 import * as FileSystem from 'expo-file-system';
 import * as IntentLauncher from 'expo-intent-launcher';
 import Constants from 'expo-constants';
+import { Alert } from 'react-native';
 
-const GITHUB_REPO = 'JeanFuentesCode/QuiraRelease';
-const CURRENT_VERSION = Constants.expoConfig?.version || '1.0.0';
+// La URL de tu archivo version.json público en GitHub Pages
+const VERSION_JSON_URL = 'https://jeanfuentescode.github.io/quiraversion/version.json';
+
+// Obtiene el versionCode interno definido en tu app.json (por defecto 1)
+const CURRENT_VERSION_CODE = Constants.expoConfig?.android?.versionCode || 1;
 
 export const checkForUpdates = async () => {
   try {
-    const response = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/releases/latest`);
-    
-    if (!response.ok) return;
+    const response = await fetch(VERSION_JSON_URL, {
+      headers: { 'Cache-Control': 'no-cache' }
+    });
+
+    if (!response.ok) return null;
 
     const data = await response.json();
-    if (!data || !data.tag_name) return;
 
-    const latestVersion = data.tag_name.replace(/^v/, '').trim();
-
-    if (isNewerVersion(CURRENT_VERSION, latestVersion)) {
-      const apkAsset = data.assets?.find((asset) => asset.name.endsWith('.apk'));
-
-      if (!apkAsset) return;
-
-      Alert.alert(
-        'Actualización disponible',
-        `Nueva versión ${latestVersion} disponible. ¿Deseas instalarla ahora?`,
-        [
-          { text: 'Luego', style: 'cancel' },
-          { 
-            text: 'Actualizar', 
-            onPress: () => downloadAndInstallApk(apkAsset.browser_download_url) 
-          }
-        ]
-      );
+    // Compara si el versionCode en Internet es mayor al de la app instalada
+    if (data && data.versionCode > CURRENT_VERSION_CODE) {
+      return data; // Devuelve { versionCode, versionName, apkUrl, notes }
     }
+    return null;
   } catch (error) {
     console.log('Error al verificar actualización:', error);
+    return null;
   }
 };
 
-const isNewerVersion = (current, latest) => {
-  const cParts = current.split('.').map(Number);
-  const lParts = latest.split('.').map(Number);
-
-  for (let i = 0; i < Math.max(cParts.length, lParts.length); i++) {
-    const cVal = cParts[i] || 0;
-    const lVal = lParts[i] || 0;
-    if (lVal > cVal) return true;
-    if (lVal < cVal) return false;
-  }
-  return false;
-};
-
-const downloadAndInstallApk = async (downloadUrl) => {
+export const downloadAndInstallApk = async (downloadUrl) => {
   try {
+    Alert.alert('Descargando', 'Obteniendo la actualización...');
+
     const fileUri = `${FileSystem.documentDirectory}Quira-update.apk`;
     const downloadRes = await FileSystem.downloadAsync(downloadUrl, fileUri);
 
-    if (downloadRes.status !== 200) return;
+    if (downloadRes.status !== 200) {
+      Alert.alert('Error', 'No se pudo descargar el archivo.');
+      return;
+    }
 
     const contentUri = await FileSystem.getContentUriAsync(downloadRes.uri);
 
