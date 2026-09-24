@@ -19,12 +19,18 @@ import RateCard from './src/components/RateCard';
 import HistoryList from './src/components/HistoryList';
 import SplashScreen from './src/components/SplashScreen';
 
+// Importamos la función de verificación
+import { checkForUpdates } from './src/services/updateService';
+
 export default function App() {
   const [showSplash, setShowSplash] = useState(true);
   const [rates, setRates] = useState(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [activeTab, setActiveTab] = useState('tasas');
+  
+  // Estado para guardar la actualización pendiente
+  const [updateData, setUpdateData] = useState(null);
   
   const [isDarkMode, setIsDarkMode] = useState(true);
   
@@ -53,13 +59,22 @@ export default function App() {
     }
   };
 
+  const verifyUpdates = async () => {
+    const update = await checkForUpdates();
+    if (update) {
+      setUpdateData(update);
+    }
+  };
+
   useEffect(() => {
     fetchRates();
+    verifyUpdates();
   }, []);
 
   const onRefresh = () => {
     setRefreshing(true);
     fetchRates();
+    verifyUpdates();
   };
 
   if (showSplash) {
