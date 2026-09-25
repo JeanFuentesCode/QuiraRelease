@@ -3,10 +3,7 @@ import * as IntentLauncher from 'expo-intent-launcher';
 import Constants from 'expo-constants';
 import { Alert } from 'react-native';
 
-// La URL de tu archivo version.json público en GitHub Pages
 const VERSION_JSON_URL = 'https://jeanfuentescode.github.io/quiraversion/version.json';
-
-// Obtiene el versionCode interno definido en tu app.json (por defecto 1)
 const CURRENT_VERSION_CODE = Constants.expoConfig?.android?.versionCode || 1;
 
 export const checkForUpdates = async () => {
@@ -19,37 +16,47 @@ export const checkForUpdates = async () => {
 
     const data = await response.json();
 
-    // Compara si el versionCode en Internet es mayor al de la app instalada
     if (data && data.versionCode > CURRENT_VERSION_CODE) {
-      return data; // Devuelve { versionCode, versionName, apkUrl, notes }
+      return data;
     }
     return null;
   } catch (error) {
-    console.log('Error al verificar actualización:', error);
+    console.error('Error al verificar actualización:', error);
     return null;
   }
 };
 
 export const downloadAndInstallApk = async (downloadUrl) => {
-  try {
-    Alert.alert('Descargando', 'Obteniendo la actualización...');
+  if (!downloadUrl) {
+    Alert.alert('Error', 'La URL de descarga no es válida.');
+    return;
+  }
 
+  try {
     const fileUri = `${FileSystem.documentDirectory}Quira-update.apk`;
+
+    // Descarga del archivo APK desde GitHub Releases
     const downloadRes = await FileSystem.downloadAsync(downloadUrl, fileUri);
 
     if (downloadRes.status !== 200) {
-      Alert.alert('Error', 'No se pudo descargar el archivo.');
+      Alert.alert(
+        'Error de descarga', 
+        `El servidor devolvió el código HTTP ${downloadRes.status}. Verifica que el enlace del APK en GitHub Releases sea público y correcto.`
+      );
       return;
     }
 
+    // Convertir a URI de contenido seguro para el FileProvider de Android
     const contentUri = await FileSystem.getContentUriAsync(downloadRes.uri);
 
+    // Lanzar el paquete de instalación nativo
     await IntentLauncher.startActivityAsync('android.intent.action.VIEW', {
       data: contentUri,
-      flags: 1,
+      flags: 1, // FLAG_GRANT_READ_URI_PERMISSION
       type: 'application/vnd.android.package-archive',
     });
   } catch (error) {
-    Alert.alert('Error', 'No se pudo iniciar la instalación.');
+    console.error('Error durante la instalación:', error);
+    Alert.alert('Error de Instalación', error.message || 'No se pudo iniciar la instalación.');
   }
 };
