@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   TouchableWithoutFeedback,
+  ScrollView,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -27,48 +28,54 @@ export default function UpdateModal({
       animationType="fade"
       onRequestClose={onClose}
     >
-      {/* Fondo semitransparente */}
       <TouchableWithoutFeedback onPress={onClose}>
         <View style={styles.overlay}>
           <TouchableWithoutFeedback>
             <View style={[styles.modalCard, dynamicStyles.modalCard]}>
               
-              {/* Icono superior */}
-              <View style={dynamicStyles.iconBadge}>
-                <Ionicons name="rocket-outline" size={28} color="#CA8A04" />
+              {/* Encabezado con Icono y Tag de Versión */}
+              <View style={styles.headerRow}>
+                <View style={dynamicStyles.iconBadge}>
+                  <Ionicons name="sparkles" size={24} color="#CA8A04" />
+                </View>
+                <View style={styles.versionBadge}>
+                  <Text style={styles.versionText}>v{updateData.versionName}</Text>
+                </View>
               </View>
 
-              {/* Título y Versión */}
-              <Text style={dynamicStyles.title}>¡Nueva versión disponible!</Text>
-              <View style={styles.versionTag}>
-                <Text style={styles.versionText}>v{updateData.versionName}</Text>
-              </View>
+              {/* Título y Subtítulo */}
+              <Text style={dynamicStyles.title}>Nueva actualización</Text>
+              <Text style={dynamicStyles.subtitle}>
+                Hay una versión disponible con mejoras de rendimiento.
+              </Text>
 
-              {/* Notas de la versión */}
+              {/* Lista de Novedades */}
               {updateData.notes ? (
                 <View style={dynamicStyles.notesContainer}>
-                  <Text style={dynamicStyles.notesTitle}>Novedades:</Text>
-                  <Text style={dynamicStyles.notesText}>{updateData.notes}</Text>
+                  <Text style={dynamicStyles.notesTitle}>NOVEDADES</Text>
+                  <ScrollView style={{ maxHeight: 110 }} showsVerticalScrollIndicator={false}>
+                    <Text style={dynamicStyles.notesText}>{updateData.notes}</Text>
+                  </ScrollView>
                 </View>
               ) : null}
 
-              {/* Botones de Acción */}
-              <View style={styles.buttonRow}>
+              {/* Acciones */}
+              <View style={styles.buttonStack}>
                 <TouchableOpacity
-                  style={[styles.button, dynamicStyles.cancelButton]}
-                  onPress={onClose}
-                  activeOpacity={0.8}
+                  style={styles.primaryButton}
+                  onPress={onUpdate}
+                  activeOpacity={0.85}
                 >
-                  <Text style={dynamicStyles.cancelButtonText}>Más tarde</Text>
+                  <Ionicons name="cloud-download-outline" size={18} color="#000000" />
+                  <Text style={styles.primaryButtonText}>Actualizar ahora</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  style={[styles.button, styles.updateButton]}
-                  onPress={onUpdate}
-                  activeOpacity={0.8}
+                  style={styles.secondaryButton}
+                  onPress={onClose}
+                  activeOpacity={0.7}
                 >
-                  <Ionicons name="download-outline" size={18} color="#FFFFFF" style={{ marginRight: 6 }} />
-                  <Text style={styles.updateButtonText}>Actualizar</Text>
+                  <Text style={dynamicStyles.secondaryButtonText}>Luego</Text>
                 </TouchableOpacity>
               </View>
 
@@ -83,110 +90,121 @@ export default function UpdateModal({
 const getStyles = (isDarkMode) =>
   StyleSheet.create({
     modalCard: {
-      backgroundColor: isDarkMode ? '#050505' : '#FFFFFF',
-      borderColor: isDarkMode ? '#1F1F23' : '#CBD5E1',
+      backgroundColor: isDarkMode ? '#09090B' : '#FFFFFF',
+      borderColor: isDarkMode ? '#27272A' : '#E2E8F0',
     },
     iconBadge: {
-      width: 56,
-      height: 56,
-      borderRadius: 28,
+      width: 48,
+      height: 48,
+      borderRadius: 14,
       backgroundColor: isDarkMode ? '#18181B' : '#FEF9C3',
       borderWidth: 1,
-      borderColor: '#CA8A04',
+      borderColor: isDarkMode ? '#27272A' : '#FEF08A',
       justifyContent: 'center',
       alignItems: 'center',
-      marginBottom: 12,
     },
     title: {
-      fontSize: 18,
+      fontSize: 20,
       fontWeight: '800',
-      color: isDarkMode ? '#FFFFFF' : '#0F172A',
-      textAlign: 'center',
+      color: isDarkMode ? '#FAFAFA' : '#0F172A',
+      letterSpacing: -0.3,
+    },
+    subtitle: {
+      fontSize: 13,
+      color: isDarkMode ? '#A1A1AA' : '#64748B',
+      marginTop: 4,
+      marginBottom: 16,
     },
     notesContainer: {
       width: '100%',
-      backgroundColor: isDarkMode ? '#111113' : '#F8FAFC',
-      borderRadius: 12,
-      padding: 12,
+      backgroundColor: isDarkMode ? '#121215' : '#F8FAFC',
+      borderRadius: 14,
+      padding: 14,
       marginBottom: 20,
       borderWidth: 1,
-      borderColor: isDarkMode ? '#1F1F23' : '#E2E8F0',
+      borderColor: isDarkMode ? '#18181B' : '#E2E8F0',
     },
     notesTitle: {
-      fontSize: 12,
-      fontWeight: '700',
+      fontSize: 10,
+      fontWeight: '800',
       color: '#CA8A04',
-      marginBottom: 4,
+      letterSpacing: 1.2,
+      marginBottom: 6,
     },
     notesText: {
       fontSize: 13,
-      color: isDarkMode ? '#A1A1AA' : '#475569',
-      lineHeight: 18,
+      color: isDarkMode ? '#D4D4D8' : '#334155',
+      lineHeight: 19,
     },
-    cancelButton: {
-      backgroundColor: isDarkMode ? '#18181B' : '#F1F5F9',
-      borderWidth: 1,
-      borderColor: isDarkMode ? '#27272A' : '#CBD5E1',
-    },
-    cancelButtonText: {
-      color: isDarkMode ? '#A1A1AA' : '#64748B',
-      fontWeight: '700',
-      fontSize: 14,
+    secondaryButtonText: {
+      color: isDarkMode ? '#71717A' : '#94A3B8',
+      fontSize: 13,
+      fontWeight: '600',
     },
   });
 
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.75)',
+    backgroundColor: 'rgba(0, 0, 0, 0.82)',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 24,
+    paddingHorizontal: 20,
   },
   modalCard: {
     width: '100%',
-    borderRadius: 20,
+    borderRadius: 24,
     borderWidth: 1,
     padding: 20,
-    alignItems: 'center',
-    elevation: 10,
+    elevation: 20,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.4,
+    shadowRadius: 15,
   },
-  versionTag: {
-    backgroundColor: 'rgba(202, 138, 4, 0.15)',
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 8,
-    marginTop: 6,
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     marginBottom: 16,
+  },
+  versionBadge: {
+    backgroundColor: 'rgba(202, 138, 4, 0.12)',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(202, 138, 4, 0.25)',
   },
   versionText: {
     color: '#CA8A04',
     fontWeight: '800',
     fontSize: 12,
+    letterSpacing: 0.5,
   },
-  buttonRow: {
-    flexDirection: 'row',
-    gap: 10,
+  buttonStack: {
     width: '100%',
+    gap: 8,
   },
-  button: {
-    flex: 1,
-    height: 46,
-    borderRadius: 12,
+  primaryButton: {
+    width: '100%',
+    height: 48,
+    borderRadius: 14,
+    backgroundColor: '#CA8A04',
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
+    gap: 8,
   },
-  updateButton: {
-    backgroundColor: '#CA8A04',
-  },
-  updateButtonText: {
-    color: '#FFFFFF',
+  primaryButtonText: {
+    color: '#000000',
     fontWeight: '800',
     fontSize: 14,
+  },
+  secondaryButton: {
+    width: '100%',
+    height: 38,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
