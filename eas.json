@@ -8,20 +8,14 @@
       "distribution": "internal",
       "android": {
         "buildType": "apk"
+      },
+      "env": {
+        "ABI_FILTERS": "arm64-v8a"
       }
     },
     "production": {
       "android": {
         "buildType": "apk"
-      }
-    },
-    "apk": {
-      "distribution": "internal",
-      "android": {
-        "buildType": "apk"
-      },
-      "env": {
-        "ABI_FILTERS": "arm64-v8a"
       }
     }
   }
