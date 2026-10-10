@@ -41,6 +41,9 @@
           "android": {
             "enableProguardInReleaseBuilds": true,
             "enableShrinkResourcesInReleaseBuilds": true,
+            "abiFilters": [
+              "arm64-v8a"
+            ],
             "extraProguardRules": "-keep class com.facebook.react.** { *; }\n-keep class com.facebook.hermes.** { *; }\n-keep class expo.modules.** { *; }\n-keep class com.quira.** { *; }\n-keep class * implements com.facebook.react.bridge.NativeModule { *; }\n-keep class * implements com.facebook.react.bridge.ReactContextBaseJavaModule { *; }\n-keep class * extends com.facebook.react.bridge.ReactContextBaseJavaModule { *; }\n-dontwarn com.facebook.react.**\n-dontwarn expo.modules.**"
           }
         }

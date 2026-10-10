@@ -1,16 +1,16 @@
 {
   "cli": {
-    "version": ">= 5.0.0",
-    "appVersionSource": "remote"
+    "version": ">= 12.0.0"
   },
   "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal"
+    },
     "preview": {
       "distribution": "internal",
       "android": {
         "buildType": "apk"
-      },
-      "env": {
-        "ABI_FILTERS": "arm64-v8a"
       }
     },
     "production": {
@@ -18,5 +18,8 @@
         "buildType": "apk"
       }
     }
+  },
+  "submit": {
+    "production": {}
   }
 }
